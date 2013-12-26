@@ -1,0 +1,57 @@
+<h1>Listing posts</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>User</th>
+      <th>Theme</th>
+      <th>Category</th>
+      <th>Comments count</th>
+      <th>Title</th>
+      <th>Body</th>
+      <th>Tags</th>
+      <th>Status</th>
+      <th>View type</th>
+      <th>View count</th>
+      <th>Main image</th>
+      <th>Comment permission</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @posts.each do |post| %>
+      <tr>
+        <td><%= post.user_id %></td>
+        <td><%= post.theme_id %></td>
+        <td><%= post.category_id %></td>
+        <td><%= post.comments_count %></td>
+        <td><%= post.title %></td>
+        <td><%= post.body %></td>
+        <td><%= post.tags %></td>
+        <td><%= post.status %></td>
+        <td><%= post.view_type %></td>
+        <td><%= post.view_count %></td>
+        <td><%= post.main_image %></td>
+        <td><%= post.comment_permission %></td>
+        <td><%= link_to 'Show', post %></td>
+        <td><%= link_to 'Edit', edit_post_path(post) %></td>
+        <td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Post', new_post_path %>
+
+
+<%= form_tag password_resets_path, :method => :post do %>
+  <div class="field">
+    <%= label_tag :email %><br />
+    <%= text_field_tag :email %> <%= submit_tag "Reset my password!" %>
+  </div>
+<% end %>
