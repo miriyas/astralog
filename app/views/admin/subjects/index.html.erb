@@ -1,0 +1,50 @@
+<div class="w100p">
+	<h1>총 <%= content_tag :span, Subject.count, :class => "font-important" %>개의 블로그 주제</h1>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>주제명</th>
+      <th>스타일</th>
+      <th>하위 카테고리 수</th>
+      <th>하위 글 수</th>
+      <th>생성일</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @subjects.each do |subject| %>
+      <tr>
+        <td><%= subject.id %></td>
+        <td><%= subject.name %></td>
+        <td>
+					<% if subject.style == 'blog' %>
+						<span class="label label-primary"><%= Subject::STYLES.index(subject.style) %></span>
+					<% elsif subject.style == 'album' %>
+						<span class="label label-success"><%= Subject::STYLES.index(subject.style) %></span>
+					<% else %>
+						<span class="label label-danger"><%= Subject::STYLES.index(subject.style) %></span>
+					<% end %>
+				</td>
+        <td><%= subject.categories_count %></td>
+        <td><%= subject.posts_count %></td>
+        <td><%= hdate(subject.created_at, "/") %></td>
+        <td>
+					<%= link_to(admin_subject_path(subject), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
+						<span class="glyphicon glyphicon-remove"></span> 삭제
+					<% end %>
+					<%= link_to(edit_admin_subject_path(subject), class: "btn btn-warning btn-xs") do %>
+						<span class="glyphicon glyphicon-pencil"></span> 수정 
+					<% end %>
+				</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to new_admin_subject_path, :class => "btn btn-success fr" do %>
+	<span class="glyphicon glyphicon-plus"></span> 새 주제 만들기
+<% end %>

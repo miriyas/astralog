@@ -23,11 +23,12 @@ ActiveRecord::Schema.define(version: 20131226103611) do
 
   create_table "categories", force: true do |t|
     t.string   "name"
-    t.integer  "theme_id"
+    t.integer  "subject_id"
     t.integer  "parent_id"
     t.string   "view_type"
-    t.string   "posts_count"
+    t.string   "posts_count", default: "0"
     t.integer  "position"
+    t.string   "role"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -45,7 +46,7 @@ ActiveRecord::Schema.define(version: 20131226103611) do
 
   create_table "posts", force: true do |t|
     t.integer  "user_id"
-    t.integer  "theme_id"
+    t.integer  "subject_id"
     t.integer  "category_id"
     t.integer  "comments_count"
     t.string   "title"
@@ -60,10 +61,12 @@ ActiveRecord::Schema.define(version: 20131226103611) do
     t.datetime "updated_at"
   end
 
-  create_table "themes", force: true do |t|
+  create_table "subjects", force: true do |t|
+    t.string   "style"
     t.string   "name"
-    t.integer  "posts_count"
-    t.integer  "view_count"
+    t.integer  "categories_count", default: 0
+    t.integer  "posts_count",      default: 0
+    t.integer  "view_count",       default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end

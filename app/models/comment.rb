@@ -14,4 +14,8 @@
 #
 
 class Comment < ActiveRecord::Base
+	belongs_to :post, :counter_cache => true, touch: true
+	belongs_to :user, :counter_cache => true, touch: true
+	belongs_to :comment
+	has_one :comment, :dependent => :nullify
 end

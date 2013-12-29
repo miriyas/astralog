@@ -1,12 +1,16 @@
 Astralog::Application.routes.draw do
-  get "password_resets/create"
-  get "password_resets/edit"
-  get "password_resets/update"
-
-  resources :comments
-
-  resources :posts
-  resources :users
-
-	resources :password_resets
+	namespace :admin do
+    root :to => "posts#index"
+		
+	  get "logout" => "sessions#destroy", :as => "logout"
+	  get "login" => "sessions#new", :as => "login"
+    post "login" => "sessions#create"
+	
+		resources :users
+		resources :subjects
+		resources :categories
+		resources :posts
+		resources :comments
+	  resources :users
+	end	
 end

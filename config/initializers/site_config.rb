@@ -1,0 +1,1 @@
+BlogName = "MIRiyA's Astralog Season 2"

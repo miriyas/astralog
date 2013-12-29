@@ -2,7 +2,7 @@ class CreatePosts < ActiveRecord::Migration
   def change
     create_table :posts do |t|
       t.integer :user_id
-      t.integer :theme_id
+      t.integer :subject_id
       t.integer :category_id
       t.integer :comments_count
       t.string :title

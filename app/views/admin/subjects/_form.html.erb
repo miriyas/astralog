@@ -1,0 +1,12 @@
+<div class="w300">
+	<%= simple_form_for [:admin, @subject] do |f| %>
+		<% @errors = @subject.errors.messages %>
+		<br>
+		<%= f.input :name, label: "주제명", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:name) %>
+		<br>
+		<%= f.input :style, label: "주제 스타일", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, :collection => Subject::STYLES %><br />
+		<br>
+		<%= render "/shared/form_confirm_or_cancel" %>
+	<% end %>
+</div>

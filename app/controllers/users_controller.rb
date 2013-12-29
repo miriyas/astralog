@@ -22,6 +22,7 @@ class UsersController < ApplicationController
     if @user.save
       redirect_to @user, notice: 'User was successfully created.'
     else
+			p @user.errors
       render action: 'new'
     end
   end
@@ -31,6 +32,7 @@ class UsersController < ApplicationController
     if @user.update(user_params)
 			redirect_to @user, notice: 'User was successfully updated.'
     else
+			p @user.errors
       render action: 'edit'
     end
   end

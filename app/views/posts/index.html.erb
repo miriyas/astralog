@@ -4,7 +4,7 @@
   <thead>
     <tr>
       <th>User</th>
-      <th>Theme</th>
+      <th>Subject</th>
       <th>Category</th>
       <th>Comments count</th>
       <th>Title</th>
@@ -25,7 +25,7 @@
     <% @posts.each do |post| %>
       <tr>
         <td><%= post.user_id %></td>
-        <td><%= post.theme_id %></td>
+        <td><%= post.subject_id %></td>
         <td><%= post.category_id %></td>
         <td><%= post.comments_count %></td>
         <td><%= post.title %></td>
