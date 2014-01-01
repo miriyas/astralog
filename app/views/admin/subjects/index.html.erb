@@ -7,8 +7,8 @@
     <tr>
       <th>#</th>
       <th>주제명</th>
-      <th>스타일</th>
-      <th>하위 카테고리 수</th>
+      <th>형태</th>
+      <th>하위 분류 수</th>
       <th>하위 글 수</th>
       <th>생성일</th>
       <th></th>
@@ -21,9 +21,10 @@
         <td><%= subject.id %></td>
         <td><%= subject.name %></td>
         <td>
-					<% if subject.style == 'blog' %>
+					<% case subject.style %>
+					<% when "blog" %>
 						<span class="label label-primary"><%= Subject::STYLES.index(subject.style) %></span>
-					<% elsif subject.style == 'album' %>
+					<% when "album" %>
 						<span class="label label-success"><%= Subject::STYLES.index(subject.style) %></span>
 					<% else %>
 						<span class="label label-danger"><%= Subject::STYLES.index(subject.style) %></span>

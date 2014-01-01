@@ -5,7 +5,7 @@ class CreateCategories < ActiveRecord::Migration
       t.integer :subject_id
       t.integer :parent_id
       t.string :view_type
-      t.string :posts_count, :default => 0
+      t.integer :posts_count, :default => 0
       t.integer :position
 			t.string :role
 

@@ -16,10 +16,19 @@
 
 class Category < ActiveRecord::Base
 	belongs_to :subject
-	belongs_to :category
+	belongs_to :parent, :class_name => "Category"
 	has_many :posts, :dependent => :nullify
-	has_many :categories, :dependent => :nullify
+	has_many :categories, class_name: "Category", foreign_key: "parent_id", :dependent => :nullify
 
-	validates_presence_of :name, :subject_id, :view_type
-	validates_length_of :name, :minimum => 1	
+	validates_presence_of :subject_id
+  validates_presence_of :name, :view_type, :if => lambda { |m| m.role == "category" }
+	validates_length_of :name, :minimum => 1, :if => lambda { |m| m.role == "category" }	
+  # validates_inclusion_of :style, in: %w(blog album), if: lambda { |m| m.style = "blog" if m.style.blank? }
+
+  VIEW_TYPE = {'목록보기' => 'list', '한장보기' => 'show', '요약보기' => 'summary'}	
+  ROLE = {'분류' => 'category', '구분' => 'divider', '공백' => 'spacer'}
+	
+	scope :upper_categories, -> {where(parent_id: nil, role: "category")}
+	scope :category_roles, -> {where(role: "category")}
+		
 end

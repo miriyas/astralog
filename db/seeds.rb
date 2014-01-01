@@ -4,14 +4,17 @@ user = User.create(nickname: "user", email: "user@gmail.com", password: 1111, pa
 subject1 = Subject.create(style: "blog", name: "IT & UX")
 subject2 = Subject.create(style: "blog", name: "개발 이야기")
 
-t1c1 = Category.create(subject_id: subject1.id, role: "category", name: "모바일 HW 이야기", view_type: "list", position: 1)
-t1c2 = Category.create(subject_id: subject1.id, role: "category", name: "카메라 이야기", view_type: "summary", position: 2)
-t1c3 = Category.create(subject_id: subject1.id, role: "category", name: "삼성", view_type: "show", position: 2)
+s1c1 = Category.create(subject_id: subject1.id, role: "category", name: "모바일 HW 이야기", view_type: "list", position: 1)
+s1c1a = Category.create(subject_id: subject1.id, role: "category", name: "삼성", view_type: "summary", position: 2, parent_id: s1c1.id)
+s1c1b = Category.create(subject_id: subject1.id, role: "category", name: "애플", view_type: "show", position: 3, parent_id: s1c1.id)
+s1d1 = Category.create(subject_id: subject1.id, role: "divider", position: 4)
+s1g1 = Category.create(subject_id: subject1.id, role: "spacer", position: 5)
+s1c2 = Category.create(subject_id: subject1.id, role: "category", name: "카메라 이야기", view_type: "summary", position: 6)
+s1c2a = Category.create(subject_id: subject1.id, role: "category", name: "캐논", view_type: "summary", position: 7, parent_id: s1c2.id)
+s1c2b = Category.create(subject_id: subject1.id, role: "category", name: "니콘", view_type: "show", position: 8, parent_id: s1c2.id)
+s2c1 = Category.create(subject_id: subject2.id, role: "category", name: "루비 온 레일즈", view_type: "list", position: 1)
+s2c2 = Category.create(subject_id: subject2.id, role: "category", name: "자바스크립트", view_type: "list", position: 2)
+s2c3 = Category.create(subject_id: subject2.id, role: "category", name: "CSS", view_type: "summary", position: 3)
 
-category1 = Category.create(subject_id: subject1.id, role: "category", name: "루비 온 레일즈", view_type: "list", position: 1)
-category1 = Category.create(subject_id: subject1.id, role: "category", name: "루비 온 레일즈", view_type: "list", position: 1)
-category1 = Category.create(subject_id: subject1.id, role: "category", name: "루비 온 레일즈", view_type: "list", position: 1)
-
-
-# 
-# post1 = Post.create(category_id: 1, user_id: admin.id, title: "테스트용 글 1", body: "글 내용 ㅇㄹㅇㄴㄹㅇㄴㄹㅁㄴ")
+post1 = Post.create(category_id: s1c1.id, subject_id: subject1.id, user_id: admin.id, title: "모바일 HW에 대한 이런저런 이야기", body: "테스트용으로 쓰이는 더미 텍스트다. 디자인을 할 때 가제로 쓰이고 레이아웃을 테스트할 때 든지 프린트의 테스트, 기계 테스트, 폰트 테스트, 컨텐츠의 양을 측정할 때도 쓰인다.")
+post2 = Post.create(category_id: s1c1b.id, subject_id: subject1.id, user_id: admin.id, title: "아이폰에 대한 이런저런 이야기", body: "테스트용으로 쓰이는 더미 텍스트다. 디자인을 할 때 가제로 쓰이고 레이아웃을 테스트할 때 든지 프린트의 테스트, 기계 테스트, 폰트 테스트, 컨텐츠의 양을 측정할 때도 쓰인다.", view_type: "album")

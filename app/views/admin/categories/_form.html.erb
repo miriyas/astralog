@@ -1,0 +1,33 @@
+<div class="w300">
+	<%= simple_form_for [:admin, @category] do |f| %>
+		<% @errors = @category.errors.messages %>
+		<br>
+		<%= f.input :name, label: "분류명", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:name) %>
+		<br>
+		<%= f.input :subject_id, label: "소속 주제", label_html: { class: "fwb" }, error: false, :collection => Subject.all.map { |s| [s.name, s.id] }, input_html: { class: "form-control", onChange: "javascript:reloadParentCategory(this.value)"} %>
+		<% flash_error_message(:subject_id) %>
+		<script type="text/javascript" charset="utf-8">
+		function reloadParentCategory(value) {
+			console.log(value);
+			// $.ajax('/admin/categories/reload_parent_category?subject=' + value);
+			$.ajax("http://localhost:3000/admin/categories/reload_parent_category?subject=" + value);
+		}
+		</script>
+		<br>
+		<div id="aaa">xxxxxxxxxxxx</div>
+		<%= f.input :parent_id, label: "상위 분류", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, :collection => Category.upper_categories.order(:position).map { |s| [s.name, s.id] }.reject{ |a,i| i == @category.id} %>
+		<% flash_error_message(:parent_id) %>
+		<br>
+		<%= f.input :view_type, label: "뷰타입", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, collection: Category::VIEW_TYPE %>
+		<% flash_error_message(:view_type) %>
+		<br>
+		<%= f.input :position, label: "순서", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:position) %>
+		<br>
+		<%= f.input :role, label: "종류", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:role) %>
+		<br>
+		<%= render "/shared/form_confirm_or_cancel" %>
+	<% end %>
+</div>

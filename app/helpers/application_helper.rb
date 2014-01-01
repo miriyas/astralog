@@ -73,7 +73,11 @@ module ApplicationHelper
       classes << html_option.delete(:class)
       classes << "first"   	if @items.first[0] == content
       classes << "last"     if @items.last[0] == content
-      classes << "active"   if options.delete(:current)
+      if options.delete(:current)
+				classes << "active"
+				content = content + content_tag(:div, "", class: "arrow")
+			end
+
 
 			if classes == [nil]
 				content_tag :li, content
