@@ -15,7 +15,7 @@
 		<% flash_error_message(:subject_id) %>
 		<script type="text/javascript" charset="utf-8">
 		function reloadParentCategory(value) {
-			$.ajax("http://localhost:3000/admin/categories/reload_parent_category?subject=" + value);
+			$.ajax("http://localhost:3000/admin/shared/reload_parent_category.js?subject=" + value);
 		}
 		</script>
 		<br>

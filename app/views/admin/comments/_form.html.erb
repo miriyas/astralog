@@ -1,0 +1,20 @@
+<div class="w300">
+	<%= simple_form_for [:admin, @comment] do |f| %>
+		<% @errors = @comment.errors.messages %>
+		<%= f.hidden_field :user_id, value: current_user.id %>
+		<br>
+		<%= f.input :post_id, label: "원글", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:post_id) %>
+		<br>
+		<%= f.input :body, label: "본문", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:body) %>
+		<br>
+		<%= f.input :role, label: "종류", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, collection: Comment::ROLE %>
+		<% flash_error_message(:role) %>
+		<br>
+		<%= f.input :parent_id, label: "상위댓글", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+		<% flash_error_message(:parent_id) %>
+		<br>
+		<%= render "/shared/form_confirm_or_cancel" %>
+	<% end %>
+</div>

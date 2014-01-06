@@ -6,12 +6,11 @@ Astralog::Application.routes.draw do
 	  get "login" => "sessions#new", as: "login"
     post "login" => "sessions#create"
 	
+  	get "reload_parent_category"	
 		resources :users
 		resources :subjects
-		resources :categories do
-			get "reload_parent_category", on: :collection
-		end
-		resources :posts
+		resources :categories
+    resources :posts
 		resources :comments
 	  resources :users
 	end	

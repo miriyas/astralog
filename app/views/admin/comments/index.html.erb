@@ -1,0 +1,74 @@
+<div class="w100p">
+	<h1>총 <%= content_tag :span, Comment.count, :class => "font-important" %>개의 댓글/트랙백</h1>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>상태</th>
+      <th>작성자</th>
+      <th>원글</th>
+      <th>상위댓글</th>
+      <th>내용</th>
+      <th>형태</th>
+      <th>작성일</th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @comments.each do |comment| %>
+      <tr>
+        <td><%= comment.id %></td>
+        <td>
+					<% case comment.status %>
+					<% when "pending" %>
+						<span class="label label-info">대기중</span>
+					<% when "running" %>
+						<span class="label label-success">공개중</span>
+					<% when "mocking" %>
+						<span class="label label-warning">모욕중</span>
+					<% when "blocked" %>
+						<span class="label label-default">비공개</span>
+					<% else %>
+						<span class="label label-danger"><%= comment.status %></span>
+					<% end %>	
+				</td>
+        <td><%= comment.user.nickname %><br><%= comment.user.email %><br><%= comment.user_ip %></td>
+        <td><%= link_to comment.post.title, admin_post_path(comment.post) %></td>
+        <td><%= comment.parent.body if comment.parent_id.present? %></td>
+        <td><%= comment.body %></td>
+        <td>
+					<% case comment.role %>
+					<% when "comment" %>
+						<span class="label label-primary"><%= Comment::ROLE.index(comment.role) %></span>
+					<% when "trackback" %>
+						<span class="label label-success"><%= Comment::ROLE.index(comment.role) %></span>
+					<% else %>
+						<span class="label label-danger"><%= comment.role %></span>
+					<% end %>	
+				</td>
+        <td>
+					<% if comment.updated_at != comment.created_at %>
+						<%= hdate(comment.created_at, "/") %><br><span class="fcb"><%= hdate(comment.updated_at, "/") %></span>
+					<% else %>
+						<%= hdate(comment.created_at, "/") %>
+					<% end %>
+				</td>
+        <td>
+					<%= link_to(admin_comment_path(comment), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
+						<span class="glyphicon glyphicon-remove"></span> 삭제
+					<% end %>
+					<%= link_to(edit_admin_comment_path(comment), class: "btn btn-warning btn-xs") do %>
+						<span class="glyphicon glyphicon-pencil"></span> 수정 
+					<% end %>
+				</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to new_admin_comment_path, :class => "btn btn-success fr" do %>
+	<span class="glyphicon glyphicon-plus"></span> 새 댓글 쓰기
+<% end %>

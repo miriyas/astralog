@@ -40,7 +40,7 @@ class Admin::CategoriesController < ApplicationController
 	
 
   private
-    def category_params
-      params.require(:category).permit(:name, :subject_id, :parent_id, :view_type, :position, :role)
-    end
+  def category_params
+    params.require(:category).permit(:name, :subject_id, :parent_id, :view_type, :position, :role)
+  end
 end
