@@ -19,62 +19,64 @@
   </thead>
 
   <tbody>
-    <% @categories.each do |category| %>
-      <tr>
-        <td><%= category.id %></td>
-        <td>
-					<% if category.subject_id.present? %>
-						<%= category.subject.name.present? ? category.subject.name : "---------------------------" %>
-					<% end %>
-				</td>
-        <td><%= category.position %></td>
-        <td><%= category.parent.present? ? category.parent.name : "-" %></td>
-        <td>
-					<% case category.role %>
-					<% when "category" %>
-						<span class="label label-primary"><%= Category::ROLE.index(category.role) %></span>
-					<% when "divider" %>
-						<span class="label label-warning"><%= Category::ROLE.index(category.role) %></span>
-					<% when "spacer" %>
-						<span class="label label-info"><%= Category::ROLE.index(category.role) %></span>
-					<% else %>
-						<span class="label label-danger"><%= Category::ROLE.index(category.role) %></span>
-					<% end %>	
-				</td>
-        <td>
-					<% case category.role %>
-					<% when "divider" %>
-						<%= "-------------------------" %>
-					<% when "spacer" %>
-						<%= "/////////////////////////" %>
-					<% else %>
-						<%= category.name %>
-					<% end %>	
-				</td>
-        <td>
-					<% case category.view_type %>
-					<% when "list" %>
-						<span class="label label-primary"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
-					<% when "summary" %>
-						<span class="label label-success"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
-					<% when "show" %>
-						<span class="label label-info"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
-					<% else %>
-						<span class="label label-danger"><%= category.view_type %></span>
-					<% end %>	
-				</td>
-        <td><%= category.posts_count %></td>
-        <td><%= hdate(category.created_at, "/") %></td>
-        <td>
-					<%= link_to(admin_category_path(category), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
-						<span class="glyphicon glyphicon-remove"></span> 삭제
-					<% end %>
-					<%= link_to(edit_admin_category_path(category), class: "btn btn-warning btn-xs") do %>
-						<span class="glyphicon glyphicon-pencil"></span> 수정 
-					<% end %>
-				</td>
-      </tr>
-    <% end %>
+		<% Subject.all.each do |subject| %>
+			<% subject.categories.order("position asc").each do |category| %>
+	      <tr>
+	        <td><%= category.id %></td>
+	        <td>
+						<% if category.subject_id.present? %>
+							<%= category.subject.name.present? ? category.subject.name : "---------------------------" %>
+						<% end %>
+					</td>
+	        <td><%= category.position %></td>
+	        <td><%= category.parent.present? ? category.parent.name : "-" %></td>
+	        <td>
+						<% case category.role %>
+						<% when "category" %>
+							<span class="label label-primary"><%= Category::ROLE.index(category.role) %></span>
+						<% when "divider" %>
+							<span class="label label-warning"><%= Category::ROLE.index(category.role) %></span>
+						<% when "spacer" %>
+							<span class="label label-info"><%= Category::ROLE.index(category.role) %></span>
+						<% else %>
+							<span class="label label-danger"><%= Category::ROLE.index(category.role) %></span>
+						<% end %>	
+					</td>
+	        <td>
+						<% case category.role %>
+						<% when "divider" %>
+							<%= "-------------------------" %>
+						<% when "spacer" %>
+							<%= "/////////////////////////" %>
+						<% else %>
+							<%= category.name %>
+						<% end %>	
+					</td>
+	        <td>
+						<% case category.view_type %>
+						<% when "list" %>
+							<span class="label label-primary"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
+						<% when "summary" %>
+							<span class="label label-success"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
+						<% when "show" %>
+							<span class="label label-info"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
+						<% else %>
+							<span class="label label-danger"><%= category.view_type %></span>
+						<% end %>	
+					</td>
+	        <td><%= category.posts_count %></td>
+	        <td><%= hdate(category.created_at, "/") %></td>
+	        <td>
+						<%= link_to(admin_category_path(category), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
+							<span class="glyphicon glyphicon-remove"></span> 삭제
+						<% end %>
+						<%= link_to(edit_admin_category_path(category), class: "btn btn-warning btn-xs") do %>
+							<span class="glyphicon glyphicon-pencil"></span> 수정 
+						<% end %>
+					</td>
+	      </tr>
+			<% end %>
+		<% end %>
   </tbody>
 </table>
 

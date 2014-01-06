@@ -38,9 +38,6 @@ class Admin::CategoriesController < ApplicationController
 		redirect_to admin_categories_path
   end
 	
-	def reload_parent_category
-		p "SSSSSSSSSSSSSSSSSSSSS"
-	end
 
   private
     def category_params

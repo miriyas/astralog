@@ -6,7 +6,7 @@ gem 'mysql2'
 gem 'sass-rails', '~> 4.0.0'
 gem 'therubyracer', platforms: :ruby
 gem 'uglifier', '>= 1.3.0'
-gem 'compass-rails', '~> 2.0.alpha.0'
+gem 'compass-rails'
 gem 'compass_twitter_bootstrap', :git => 'git://github.com/vwall/compass-twitter-bootstrap.git'
 gem 'oily_png'
 

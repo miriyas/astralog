@@ -1,5 +1,9 @@
-console.log('<%= params[:subject] %>');
+var category_input = "<div class='input select optional category_parent_id'><label class='select optional fwb' for='category_parent_id'>상위 분류</label><select class='select optional form-control' id='category_parent_id' name='category[parent_id]'><option value=''></option>";
 
-$('#aaa').addClass("33333333333");
+<% Category.where(subject_id: params[:subject]).category_roles.each do |category| %>
+	category_input += "<option value='<%= category.id %>'><%= category.name %></option>";
+<% end %>
 
-console.log("dddd")
+category_input += "</select></div>";
+
+$('#parent_id_wrapper').html(category_input);
