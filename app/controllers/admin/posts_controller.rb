@@ -29,7 +29,7 @@ class Admin::PostsController < ApplicationController
   def update
     @post = Post.find(params[:id])
     if @post.update(post_params)
-      redirect_to @post, notice: 'Post was successfully updated.'
+      redirect_to admin_posts_path, notice: 'Post was successfully updated.'
     else
 			p @post.errors
       render action: 'edit'

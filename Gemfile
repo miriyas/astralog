@@ -29,7 +29,9 @@ group :doc do
 end
 
 group :development do
-	gem 'awesome_print'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
+  gem 'awesome_print'
 	gem 'quiet_assets'
 	gem 'annotate', '~> 2.4.1.beta'
 	gem 'rails-erd'
