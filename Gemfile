@@ -28,6 +28,8 @@ group :doc do
   gem 'sdoc', require: false
 end
 
+gem 'unicorn', group: :production
+
 group :development do
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
