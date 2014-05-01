@@ -10,7 +10,6 @@ class Admin::CommentsController < ApplicationController
     @comment = Comment.new
   end
   def create
-    p comment_params
     params[:comment][:user_ip] = request.remote_ip
     @comment = Comment.new(comment_params)
     if @comment.save
