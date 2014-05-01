@@ -1,42 +1,60 @@
 <%= javascript_include_tag "epiceditor.min" %>
 
-<%= "미완성" %>
-<div class="w300">
+<div>
   <%= simple_form_for [:admin, @post] do |f| %>
     <% @errors = @post.errors.messages %>
     <%= f.hidden_field :user_id, value: current_user.id %>
     <%= f.hidden_field :body %>
 
-    <a id="save">저장</a>
-    <a id="load">불러오기</a>
-    <div id="epiceditor"></div>
-    <br>
-    <%= f.input :title, label: "제목", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
-    <% flash_error_message(:title) %>
-    <% flash_error_message(:body) %>
-    <br>
-    <%= f.input :subject_id, label: "주제", label_html: { class: "fwb" }, error: false, :collection => Subject.all.map { |s| [s.name, s.id] }, input_html: { class: "form-control", onChange: "javascript:reloadParentCategory(this.value)"} %>
-    <% flash_error_message(:subject_id) %>
-    <script type="text/javascript" charset="utf-8">
-    function reloadParentCategory(value) {
-      console.log(value)
-      $.ajax('../reload_parent_category?subject=' + value)
-    }
-    </script>
-    <br>
-    <%= f.input :category_id, label: "분류", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, :collection => Category.category_roles.order(:position).map { |s| [s.name, s.id] }.reject{ |a,i| i == @post.category_id} %>
-    <% flash_error_message(:parent_id) %>
-    <br>
-    <%= f.input :view_type, label: "뷰타입", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, collection: Category::VIEW_TYPE %>
-    <% flash_error_message(:view_type) %>
-    <br>
-    <%= render "/shared/form_confirm_or_cancel" %>
+    <div class="editor_wrapper">
+      <div id="epiceditor"></div>
+      <div id="save_pannel">
+        <a id="save">현재 편집 상황 임시 저장</a><br>
+        <ul id="saved_list"></ul>
+        <a id="flush">저장본 후련하게 싹 비우기</a><br>
+      </div>
+    </div>
+    <div class="w300">
+      <br>
+      <%= f.input :title, label: "제목", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false %>
+      <% flash_error_message(:title) %>
+      <% flash_error_message(:body) %>
+      <br>
+      <%= f.input :subject_id, label: "주제", label_html: { class: "fwb" }, error: false, :collection => Subject.all.map { |s| [s.name, s.id] }, input_html: { class: "form-control", onChange: "javascript:reloadParentCategory(this.value)"} %>
+      <% flash_error_message(:subject_id) %>
+      <script type="text/javascript" charset="utf-8">
+      function reloadParentCategory(value) {
+        console.log(value)
+        $.ajax('../reload_parent_category?subject=' + value)
+      }
+      </script>
+      <br>
+      <%= f.input :category_id, label: "분류", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, :collection => Category.category_roles.order(:position).map { |s| [s.name, s.id] }.reject{ |a,i| i == @post.category_id} %>
+      <% flash_error_message(:parent_id) %>
+      <br>
+      <%= f.input :view_type, label: "뷰타입", label_html: { class: "fwb" }, input_html: { class: "form-control" }, error: false, collection: Category::VIEW_TYPE %>
+      <% flash_error_message(:view_type) %>
+      <br>
+      <%= render "/shared/form_confirm_or_cancel" %>
+    </div>
   <% end %>
 </div>
 
 <script type="text/javascript" charset="utf-8">
+var user_id = <%= current_user.id %>;
+var post_id = <%= params[:action] == "edit" ? @post.id : "new" %>;
+var name_base = 'ep_u' + user_id + '_p' + post_id;
+var temp_file = name_base + '_auto';
+var last_saved = name_base + '_last';
+
 setTimeout(function(){
-  console.log(2)
+  var saved_list = JSON.parse(localStorage.getItem("epiceditor"));
+  if (saved_list[temp_file]) {
+    // 이전 임시 저장본이 있을 경우 마지막 저장본으로 살려둔다.
+    saved_list[last_saved] = saved_list[temp_file];
+    localStorage.setItem("epiceditor", JSON.stringify(saved_list))
+  }
+  
   var opts = {
     container: 'epiceditor',
     textarea: 'post_body',
@@ -46,7 +64,7 @@ setTimeout(function(){
     useNativeFullscreen: false,
     parser: marked,
     file: {
-      name: 'editor_u<%= current_user.id %>_p<%= params[:action] == "edit" ? @post.id : Post.last.id + 1 %>',
+      name: temp_file,
       defaultContent: '내용',
       autoSave: 100
     },
@@ -78,28 +96,54 @@ setTimeout(function(){
   editor.load(function () {
     console.log("Editor loaded.")
   });
-
-  var files = editor.getFiles();
-  for (x in files) {
-    console.log('File: ' + x); //Returns the name of each file
-  };
   
+  renderSavedList();
+
+
+
   $('#save').click(function(){
-    editor.save();
-    console.log("saved.");
+    // 현재 저장된 데이터에 새 항목을 추가한다.
+    var newName = name_base + "_t" + moment().format('YYYY/MM/DD_hh:mm:ss');
+    saved_list = JSON.parse(localStorage.getItem("epiceditor"))
+    saved_list[newName] = saved_list[temp_file];
+    localStorage.setItem("epiceditor", JSON.stringify(saved_list))
+    renderSavedList();
   });
-
-  $('#list').click(function(){
+  
+  $('#flush').click(function(){
+    // 임시 저장된 데이터들을 싹 지운다.
     var files = editor.getFiles();
-    for (x in files) {
-      console.log('File: ' + x); //Returns the name of each file
+    for (post_name in files) {
+      if (post_name == temp_file) continue;
+      editor.remove(post_name);
     };
+    renderSavedList();
   });
   
-  $('#load').click(function(){
-    editor.open('editor_u<%= current_user.id %>_p<%= params[:action] == "edit" ? @post.id : Post.last.id + 1 %>'); 
-    console.log('loded');
-  });
-  
+  function renderSavedList() {
+    $('#saved_list').html("");
+
+    var saved_posts = editor.getFiles();
+    for (p in saved_posts) {
+      if (p == temp_file) continue;
+      if (p == last_saved) continue;
+      var title = p.replace(name_base + "_t", "") + "에 저장됨"
+      $('#saved_list').append('<li data-saveid=' + p + ' class="tdu">' + title + '</li>');
+    };
+    
+    if (saved_posts[last_saved]) {
+      var last_saved_time = moment(saved_posts[last_saved].modified).format('YYYY/MM/DD_hh:mm:ss');
+      $('#saved_list').append('<li data-saveid=' + last_saved + ' class="tdu">' + last_saved_time + ' 마지막 저장본</li>');
+    }
+    
+    $('#saved_list li').click(function(){
+      saved_list = JSON.parse(localStorage.getItem("epiceditor"))
+      saved_list[temp_file] = saved_list[this.dataset.saveid];
+      localStorage.setItem("epiceditor", JSON.stringify(saved_list))
+      editor.open(temp_file);
+    });
+  }
+
 },100);
+
 </script>
