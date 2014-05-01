@@ -35,7 +35,7 @@
             <span class="label label-danger"><%= post.view_type %></span>
           <% end %> 
         </td>
-        <td><%= post.title %></td>
+        <td><%= link_to(post.title, post_path(post)) %></td>
         <td><%= post.tags %></td>
         <td>
           <% case post.status %>
