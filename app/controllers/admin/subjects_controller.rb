@@ -1,7 +1,7 @@
 class Admin::SubjectsController < ApplicationController
-	before_filter :require_admin
-	layout 'admin'
-	
+  before_filter :require_admin
+  layout 'admin'
+  
   def index
     @subjects = Subject.all
   end
@@ -14,7 +14,7 @@ class Admin::SubjectsController < ApplicationController
     if @subject.save
       redirect_to admin_subjects_path, notice: '주제가 생성되었습니다.'
     else
-			p @subject.errors
+      p @subject.errors
       render action: 'new'
     end
   end
@@ -27,7 +27,7 @@ class Admin::SubjectsController < ApplicationController
     if @subject.update(subject_params)
       redirect_to admin_subjects_path, notice: '주제가 수정되었습니다.'
     else
-			p @subject.errors
+      p @subject.errors
       render action: 'edit'
     end
   end
@@ -35,11 +35,13 @@ class Admin::SubjectsController < ApplicationController
   def destroy
     @subject = Subject.find(params[:id])
     @subject.destroy
-		redirect_to admin_subjects_path
+    redirect_to admin_subjects_path
   end
 
-  private
-    def subject_params
-      params.require(:subject).permit(:name, :style)
-    end
+private
+
+  def subject_params
+    params.require(:subject).permit(:name, :style)
+  end
+
 end

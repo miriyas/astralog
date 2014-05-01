@@ -20,17 +20,17 @@
 #
 
 class Post < ActiveRecord::Base
-	belongs_to :user, :counter_cache => true, touch: true
-	belongs_to :subject, :counter_cache => true, touch: true
-	belongs_to :category, :counter_cache => true, touch: true
-	has_many :comments, :dependent => :destroy
+  belongs_to :user, :counter_cache => true, touch: true
+  belongs_to :subject, :counter_cache => true, touch: true
+  belongs_to :category, :counter_cache => true, touch: true
+  has_many :comments, :dependent => :destroy
 
-	validates_presence_of :user_id, :subject_id, :category_id, :title, :body
-	validates_length_of :title, :minimum => 1
-	validates_length_of :body, :minimum => 1
+  validates_presence_of :user_id, :subject_id, :category_id, :title, :body
+  validates_length_of :title, :minimum => 1
+  validates_length_of :body, :minimum => 1
   validates_inclusion_of :view_type, in: %w(photo normal), if: lambda { |m| m.view_type = "normal" if m.view_type.blank? }
   validates_inclusion_of :status, in: %w(pending running), if: lambda { |m| m.status = "pending" if m.status.blank? }
 
-  VIEW_TYPE = {'앨범' => 'album', '일반' => 'normal'}	
+  VIEW_TYPE = {'앨범' => 'album', '일반' => 'normal'} 
 
 end

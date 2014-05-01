@@ -1,5 +1,5 @@
 <div class="w100p">
-	<h1>총 <%= content_tag :span, Post.count, :class => "font-important" %>개의 글</h1>
+  <h1>총 <%= content_tag :span, Post.count, :class => "font-important" %>개의 글</h1>
 </div>
 
 <table class="table table-striped">
@@ -26,43 +26,43 @@
         <td><%= post.subject.name %></td>
         <td><%= post.category.name %></td>
         <td>
-					<% case post.view_type %>
-					<% when "normal" %>
-						<span class="label label-primary"><%= Post::VIEW_TYPE.index(post.view_type) %></span>
-					<% when "album" %>
-						<span class="label label-success"><%= Post::VIEW_TYPE.index(post.view_type) %></span>
-					<% else %>
-						<span class="label label-danger"><%= post.view_type %></span>
-					<% end %>	
-				</td>
+          <% case post.view_type %>
+          <% when "normal" %>
+            <span class="label label-primary"><%= Post::VIEW_TYPE.index(post.view_type) %></span>
+          <% when "album" %>
+            <span class="label label-success"><%= Post::VIEW_TYPE.index(post.view_type) %></span>
+          <% else %>
+            <span class="label label-danger"><%= post.view_type %></span>
+          <% end %> 
+        </td>
         <td><%= post.title %></td>
         <td><%= post.tags %></td>
         <td>
-					<% case post.status %>
-					<% when "pending" %>
-						<span class="label label-warning">비공개</span>
-					<% when "running" %>
-						<span class="label label-success">공개</span>
-					<% else %>
-						<span class="label label-danger"><%= post.status %></span>
-					<% end %>	
-				</td>
+          <% case post.status %>
+          <% when "pending" %>
+            <span class="label label-warning">비공개</span>
+          <% when "running" %>
+            <span class="label label-success">공개</span>
+          <% else %>
+            <span class="label label-danger"><%= post.status %></span>
+          <% end %> 
+        </td>
         <td><%= post.comments_count %></td>
         <td><%= post.view_count %></td>
         <td><%= hdate(post.created_at, "/") %></td>
         <td>
-					<%= link_to(admin_post_path(post), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
-						<span class="glyphicon glyphicon-remove"></span> 삭제
-					<% end %>
-					<%= link_to(edit_admin_post_path(post), class: "btn btn-warning btn-xs") do %>
-						<span class="glyphicon glyphicon-pencil"></span> 수정 
-					<% end %>
-				</td>
+          <%= link_to(admin_post_path(post), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
+            <span class="glyphicon glyphicon-remove"></span> 삭제
+          <% end %>
+          <%= link_to(edit_admin_post_path(post), class: "btn btn-warning btn-xs") do %>
+            <span class="glyphicon glyphicon-pencil"></span> 수정 
+          <% end %>
+        </td>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <%= link_to new_admin_post_path, :class => "btn btn-success fr" do %>
-	<span class="glyphicon glyphicon-plus"></span> 새 글 쓰기
+  <span class="glyphicon glyphicon-plus"></span> 새 글 쓰기
 <% end %>

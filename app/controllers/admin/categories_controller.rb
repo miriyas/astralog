@@ -1,7 +1,7 @@
 class Admin::CategoriesController < ApplicationController
-	before_filter :require_admin
-	layout 'admin'
-	
+  before_filter :require_admin
+  layout 'admin'
+  
   def index
     @categories = Category.all
   end
@@ -14,7 +14,7 @@ class Admin::CategoriesController < ApplicationController
     if @category.save
       redirect_to admin_categories_path, notice: '분류가 생성되었습니다.'
     else
-			p @category.errors
+      p @category.errors
       render action: 'new'
     end
   end
@@ -27,7 +27,7 @@ class Admin::CategoriesController < ApplicationController
     if @category.update(category_params)
       redirect_to admin_categories_path, notice: '분류가 수정되었습니다.'
     else
-			p @category.errors
+      p @category.errors
       render action: 'edit'
     end
   end
@@ -35,12 +35,14 @@ class Admin::CategoriesController < ApplicationController
   def destroy
     @category = Category.find(params[:id])
     @category.destroy
-		redirect_to admin_categories_path
+    redirect_to admin_categories_path
   end
-	
+  
 
-  private
+private
+
   def category_params
     params.require(:category).permit(:name, :subject_id, :parent_id, :view_type, :position, :role)
   end
+
 end

@@ -1,26 +1,25 @@
 module ApplicationHelper
 
+  def hdate(dt, divider={})
+    return '' if dt.blank?
+    divider = "." if divider.blank?
+    dt.strftime("%Y#{divider}%m#{divider}%d")
+  end
 
-	def hdate(dt, divider={})
-		return '' if dt.blank?
-		divider = "." if divider.blank?
-		dt.strftime("%Y#{divider}%m#{divider}%d")
-	end
+  def hdatetime(dt, divider={})
+    return '' if dt.blank?
+    divider = "." if divider.blank?
+    dt.strftime("%Y#{divider}%m#{divider}%d %H:%M")
+  end
 
-	def hdatetime(dt, divider={})
-		return '' if dt.blank?
-		divider = "." if divider.blank?
-		dt.strftime("%Y#{divider}%m#{divider}%d %H:%M")
-	end
-
-	# for form error message
-	def flash_error_message(association)
-		if @errors[association].present?
-			@errors.each do |a, message|
-				concat "<div class='flash_error_message'>#{message.to_sentence}</div>".html_safe
-			end
-		end
-	end
+  # for form error message
+  def flash_error_message(association)
+    if @errors[association].present?
+      @errors.each do |a, message|
+        concat "<div class='flash_error_message'>#{message.to_sentence}</div>".html_safe
+      end
+    end
+  end
 
 # == Navigation Tag Helpers ==
 
@@ -71,20 +70,20 @@ module ApplicationHelper
       classes = [] 
       html_option = options.delete(:html) || {}
       classes << html_option.delete(:class)
-      classes << "first"   	if @items.first[0] == content
+      classes << "first"    if @items.first[0] == content
       classes << "last"     if @items.last[0] == content
       if options.delete(:current)
-				classes << "active"
-				content = content + content_tag(:div, "", class: "arrow")
-			end
+        classes << "active"
+        content = content + content_tag(:div, "", class: "arrow")
+      end
 
 
-			if classes == [nil]
-				content_tag :li, content
-			else
-				html_option[:class] = classes.join(" ").strip
-				content_tag :li, content, html_option
-			end
+      if classes == [nil]
+        content_tag :li, content
+      else
+        html_option[:class] = classes.join(" ").strip
+        content_tag :li, content, html_option
+      end
     end
     
     def build
@@ -93,6 +92,5 @@ module ApplicationHelper
     
     alias :to_html :build
   end
-
 
 end

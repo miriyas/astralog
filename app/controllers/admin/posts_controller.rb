@@ -1,7 +1,7 @@
 class Admin::PostsController < ApplicationController
-	before_filter :require_admin
-	layout 'admin'
-	
+  before_filter :require_admin
+  layout 'admin'
+  
   def index
     @posts = Post.all
   end
@@ -18,7 +18,7 @@ class Admin::PostsController < ApplicationController
     if @post.save
       redirect_to admin_posts_path, notice: 'Post was successfully created.'
     else
-			p @post.errors
+      p @post.errors
       render action: 'new'
     end
   end
@@ -31,7 +31,7 @@ class Admin::PostsController < ApplicationController
     if @post.update(post_params)
       redirect_to admin_posts_path, notice: 'Post was successfully updated.'
     else
-			p @post.errors
+      p @post.errors
       render action: 'edit'
     end
   end
@@ -39,11 +39,13 @@ class Admin::PostsController < ApplicationController
   def destroy
     @post = Post.find(params[:id])
     @post.destroy
-		redirect_to posts_url
+    redirect_to posts_url
   end
 
-  private
-    def post_params
-      params.require(:post).permit(:user_id, :subject_id, :category_id, :title, :body, :tags, :status, :view_type, :main_image, :comment_permission)
-    end
+private
+
+  def post_params
+    params.require(:post).permit(:user_id, :subject_id, :category_id, :title, :body, :tags, :status, :view_type, :main_image, :comment_permission)
+  end
+
 end

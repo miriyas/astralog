@@ -13,13 +13,13 @@
 #
 
 class Subject < ActiveRecord::Base
-	has_many :categories, :dependent => :nullify
-	has_many :posts, :dependent => :nullify
+  has_many :categories, :dependent => :nullify
+  has_many :posts, :dependent => :nullify
 
-	validates_presence_of :name
-	validates_length_of :name, minimum: 1, message: "주제명은 반드시 1글자 이상이어야 합니다."
+  validates_presence_of :name
+  validates_length_of :name, minimum: 1, message: "주제명은 반드시 1글자 이상이어야 합니다."
   validates_inclusion_of :style, in: %w(blog album), if: lambda { |m| m.style = "blog" if m.style.blank? }
-	
+  
   STYLES = {'블로그' => 'blog', '앨범' => 'album'}
-	
+  
 end

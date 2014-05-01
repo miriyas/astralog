@@ -18,23 +18,23 @@
 
 class User < ActiveRecord::Base
   authenticates_with_sorcery!
-	# has_many :authentications, :dependent => :destroy 
+  # has_many :authentications, :dependent => :destroy 
 
   validates_presence_of :email
   validates_uniqueness_of :email
-	validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
   validates :password, length: { minimum: 4 }, :if => :password_required?
   validates :password, confirmation: true, :if => :password_required?
   validates :password_confirmation, presence: true, :if => :password_required?
   validates_presence_of :nickname
   validates_inclusion_of :role, :in => %w(admin user), :if => lambda { |m| m.role = "user" if m.role.blank? }
 
-	# ROLES = {
-	# 	"관리자" => "admin",
-	# 	"추종자" => "user" 
-	# }
+  # ROLES = {
+  #   "관리자" => "admin",
+  #   "추종자" => "user" 
+  # }
 
-	scope :users, -> { where(role: "user") }
+  scope :users, -> { where(role: "user") }
 
   def password_required?
     new_record? || password
@@ -44,9 +44,9 @@ class User < ActiveRecord::Base
     role == "admin"
   end
 
-	# def user?
-	# 	role == "user"
-	# end
+  # def user?
+  #   role == "user"
+  # end
   
   # def new_password!
   #   _password = "#{SecureRandom.hex(4)}!"
