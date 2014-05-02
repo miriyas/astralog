@@ -80,3 +80,23 @@ a {
   url('../assets/fonts/glyphicons-halflings-regular.ttf') format('truetype'), 
   url('../assets/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
 }
+
+
+
+// EDITOR
+.editor_wrapper {
+  height: 400px;
+  #epiceditor {
+    float: left;
+    width: 800px;
+    height: 100%;
+    border: 1px solid #ccc;
+  }
+  #save_pannel {
+    float: left;
+    width: 300px;
+    height: 100%;
+    border: 1px solid #ccc;
+    border-left: none;
+  }
+}
