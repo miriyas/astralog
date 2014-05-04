@@ -29,14 +29,14 @@ class Asset < ActiveRecord::Base
   def url(style = nil)
     style ||= :original
     if style.to_s == "file"
-      "/system/assets/#{self.created_at_to_path}/#{self.id}/#{self.filename}"
+      "/system/assets/#{self.created_at_to_path}/asset_#{self.id}/#{self.filename}"
     else
-      "/system/assets/#{self.created_at_to_path}/#{self.id}/#{style.to_s}_#{self.filename}"
+      "/system/assets/#{self.created_at_to_path}/asset_#{self.id}/#{style.to_s}_#{self.filename}"
     end
   end
 
   def path(style = nil)
-    dir = "#{Rails.root.to_s}/public/system/assets/#{self.created_at_to_path}/#{self.id}"
+    dir = "#{Rails.root.to_s}/public/system/assets/#{self.created_at_to_path}/asset_#{self.id}"
 
     style.blank? ? dir : "#{dir}/#{style.to_s}_#{self.filename}"
   end
@@ -62,6 +62,8 @@ protected
     img = MiniMagick::Image.read(_filedata.read)
     rthumbs = [
       { :name => 'original', :size => "2560x2560>" },
+      { :name => 'standard', :size => "1280>" },
+      { :name => 'small', :size => "480>" },
       { :name => 'thumb80', :size => "80x80!" },
       { :name => 'thumb160', :size => "160x160!" }
     ].each do |rt|

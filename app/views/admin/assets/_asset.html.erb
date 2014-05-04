@@ -1,6 +1,6 @@
 <li>
   <% if @asset.is_image? %>
-    <%= link_to_function image_mask(@asset.url(:thumb80), 80, 80), "insertImage(this);", :rel => @asset.url('std') %>
+    <%= link_to_function image_mask(@asset.url(:thumb80), 80, 80), "insertImage(this);", :rel => @asset.url(:standard) %>
   <% else %>
     <p class="ext"><%= File.extname(@asset.filename).gsub(/^\./, '').upcase %></p>
     <%= link_to_function asset.filename, "insertFile(this)", :rel => @asset.url %>

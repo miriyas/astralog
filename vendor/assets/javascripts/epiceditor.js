@@ -143,6 +143,129 @@
     return el.contentDocument || el.contentWindow.document;
   }
 
+  // Get index of current selection start
+  function _getSelectionStart(iframeDocument) {
+    var body = iframeDocument.body
+      , selection = _getSelection(iframeDocument)
+      , range
+      , element
+      , container
+      , offset;
+
+    if (selection != null && selection.rangeCount) {
+      range = selection.getRangeAt(0);
+      element = range.startContainer;
+      container = element;
+      offset = range.startOffset;
+
+      if (!(body.compareDocumentPosition(element) & 0x10)) {
+        return 0;
+      }
+
+      do {
+        while (element = element.previousSibling) {
+          if (element.textContent) {
+            offset += element.textContent.length;
+          }
+        }
+
+        element = container = container.parentNode;
+      } while (element && element != body);
+
+      return offset;
+    } else {
+      return 0;
+    }
+  }
+  
+  // Get index of current selection end
+  function _getSelectionEnd(iframeDocument) {
+    var selection = _getSelection(iframeDocument);
+
+    if (selection != null && selection.rangeCount) {
+      return _getSelectionStart(iframeDocument) + (selection.getRangeAt(0) + '').length;
+    }
+
+    return 0;
+  }
+
+  // Insert newline and respect smart indentation if the option is present
+  function _insertNewline(iframeDocument, smartIndent) {
+    var body = iframeDocument.body
+      , content
+      , ss
+      , before
+      , lf
+      , indent = '';
+
+    if (!smartIndent) {
+      _insertText(iframeDocument, '\n');
+    }
+    else {
+      content = _getText(body);
+      ss = _getSelectionStart(iframeDocument);
+      before = content.slice(0, ss);
+      lf = before.lastIndexOf('\n') + 1;
+      indent = (before.slice(lf).match(/^\s+/) || [''])[0];
+
+      _insertText(iframeDocument, '\n' + indent);
+    }
+  }
+
+  /**
+   * Set selection range
+   * @param {HTMLDocument} iframe document
+   * @param {number} selection start
+   * @param {number} selection end
+   */
+  function _setSelectionRange(iframeDocument, ss, se) {
+    var body = iframeDocument.body
+      , range = iframeDocument.createRange()
+      , textNode = body.firstChild
+      , text = _getText(body)
+      , textLength = text.length
+      , selection;
+
+    // Protected against IndexSizeError, which happens when ss or se is bigger
+    // than the length of the text content
+    ss = ss > textLength ? textLength : ss;
+    se = se > textLength ? textLength : se;
+
+    range.setStart(textNode, ss);
+    range.setEnd(textNode, se);
+
+    selection = _getSelection(iframeDocument);
+
+    // Our API strictly states that _getSelection can return null
+    if (selection != null) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+  }
+
+  /**
+   * Get selection range
+   *
+   * Note: In older versions of Internet Explorer, this returns TextRange object
+   *
+   * @param {HTMLDocument} HTMLDocument container
+   * @returns {Selection|TextRange|undefined} Selection
+   */
+  function _getSelection(iframeDocument) {
+    var contentWindow = iframeDocument.defaultView;
+    if (contentWindow) {
+      // Most modern browsers
+      return contentWindow.getSelection();
+    }
+    else if (iframeDocument.selection) {
+      // IE returns TextRange object
+      return iframeDocument.selection.createRange();
+    }
+    else {
+      return window.getSelection();
+    }
+  }
+  
   // Grabs the text from an element and preserves whitespace
   function _getText(el) {
     var theText;
@@ -182,6 +305,33 @@
 
     el.innerHTML = content;
     return true;
+  }
+  
+  // Insert text to given iframe document
+  function _insertText(iframeDocument, text) {
+    if (!text || text.length === 0) {
+      return;
+    }
+
+    var el = iframeDocument.body
+      , content = _getText(el)
+      , ss = _getSelectionStart(iframeDocument)
+      , se = _getSelectionEnd(iframeDocument)
+      , before = content.slice(0, ss)
+      , after = content.slice(se)
+      , selection = content.slice(ss, se);
+
+    // Insert text at selection
+    before += text;
+    selection = '';
+
+    // The effect here is: remove selection, add text
+    _setText(el, before + selection + after);
+
+    // Restore the cursor position
+    ss += text.length;
+    se = ss;
+    _setSelectionRange(iframeDocument, ss, se);
   }
 
   /**
@@ -1353,6 +1503,51 @@
 
     self.emit('preview');
     return self;
+  }
+  
+  /**
+   * Get current selection
+   * @returns {Object|Null}
+   */
+  EpicEditor.prototype.getSelection = function () {
+    return _getSelection(this.editorIframeDocument);
+  }
+
+  /**
+   * Insert text at the current cursor position. If selection is not empty, it
+   * will replace the selected text.
+   * @param {string} Text to insert
+   * @returns {object} EpicEditor will be returned
+   */
+  EpicEditor.prototype.insertText = function (text) {
+    _insertText(this.editorIframeDocument, text);
+    return this;
+  }
+
+  /**
+   * Grabs a specificed HTML node. Use it as a shortcut to getting the iframe contents
+   * @param   {String} name The name of the node (can be document, body, editor, previewer, or wrapper)
+   * @returns {Object|Null}
+   */
+  EpicEditor.prototype.getElement = function (name) {
+    var available = {
+      "container": this.element
+    , "wrapper": this.iframe.getElementById('epiceditor-wrapper')
+    , "wrapperIframe": this.iframeElement
+    , "editor": this.editorIframeDocument
+    , "editorIframe": this.editorIframe
+    , "previewer": this.previewerIframeDocument
+    , "previewerIframe": this.previewerIframe
+    }
+
+    // Check that the given string is a possible option and verify the editor isn't unloaded
+    // without this, you'd be given a reference to an object that no longer exists in the DOM
+    if (!available[name] || this.is('unloaded')) {
+      return null;
+    }
+    else {
+      return available[name];
+    }
   }
 
   /**
