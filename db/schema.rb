@@ -16,7 +16,6 @@ ActiveRecord::Schema.define(version: 20140502194546) do
   create_table "assets", force: true do |t|
     t.integer  "user_id"
     t.string   "filename"
-    t.string   "screen_filename"
     t.string   "content_type"
     t.string   "filesize"
     t.string   "dimensions"

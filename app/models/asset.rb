@@ -28,7 +28,11 @@ class Asset < ActiveRecord::Base
 
   def url(style = nil)
     style ||= :original
-    "/system/assets/#{self.created_at_to_path}/#{self.id}/#{style.to_s}_#{self.filename}"
+    if style.to_s == "file"
+      "/system/assets/#{self.created_at_to_path}/#{self.id}/#{self.filename}"
+    else
+      "/system/assets/#{self.created_at_to_path}/#{self.id}/#{style.to_s}_#{self.filename}"
+    end
   end
 
   def path(style = nil)
@@ -41,15 +45,12 @@ class Asset < ActiveRecord::Base
     if _filedata
       @new_asset = Time.now.to_f.to_s.gsub(/[^0-9]/,'')
       FileUtils.mkdir_p("/tmp/#{@new_asset}")
-      self.screen_filename = _filedata.original_filename.force_encoding("UTF-8")
       self.content_type = _filedata.content_type
       self.filesize = _filedata.size
-
+      self.filename = _filedata.original_filename.force_encoding("UTF-8")
       if /image/i.match(_filedata.content_type).blank?
-        self.filename = "#{Time.now.to_f.to_s.gsub(/[^0-9]/,'')}#{File.extname(_filedata.original_filename)}"
         store_file(_filedata)
       else
-        self.filename = "#{Time.now.to_f.to_s.gsub(/[^0-9]/,'')}.png"
         store_image(_filedata)
       end
     end

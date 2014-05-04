@@ -9,7 +9,7 @@
         <th>#</th>
         <th>사진</th>
         <th>업로더</th>
-        <th>파일명<br>실제파일명</th>
+        <th>파일명</th>
         <th>크기<br>용량</th>
         <th>올린날짜<br>올린시간</th>
         <th></th>
@@ -29,13 +29,19 @@
             <% else %>
               <span class="label label-danger">
             <% end %> 
-            <%= asset.content_type.gsub("image/", "").upcase %></span>
+            <%= asset.content_type.gsub("image/", "").gsub("application/", "").upcase %></span>
           </td>
-          <td><%= link_to(image_tag(asset.url(:thumb80)), asset.url) %></td>
-          <td><%= asset.user.nickname %><br><%= asset.user.email %></td>
-          <td><%= asset.screen_filename %><br><%= asset.filename %></td>
           <td>
-            <%= asset.dimensions %><br>
+            <% if asset.is_image? %>
+              <%= link_to(image_tag(asset.url(:thumb80)), asset.url) %>
+            <% else %>
+              <%= link_to(asset.filename, asset.url(:file)) %>
+            <% end %>
+          </td>
+          <td><%= asset.user.nickname %><br><%= asset.user.email %></td>
+          <td><%= asset.filename %></td>
+          <td>
+            <%= first_or_second(asset.dimensions, "-") %><br>
             <% if asset.filesize.blank? %>
               -
             <% else %>
