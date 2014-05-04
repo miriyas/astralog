@@ -15,6 +15,7 @@ tmp
 public/uploads
 public/assets
 public/assets/*
+public/system/assets/*
 
 # Ignore sprite image
 s-*.png

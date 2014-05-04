@@ -34,6 +34,7 @@
             <%= m.item "분류", admin_categories_path, :current => params[:controller] == "admin/categories" %>
             <%= m.item "글", admin_posts_path, :current => params[:controller] == "admin/posts" %>
             <%= m.item "댓글", admin_comments_path, :current => params[:controller] == "admin/comments" %>
+            <%= m.item "파일", admin_assets_path, :current => params[:controller] == "admin/assets" %>
             <%= m.item "사용자", admin_users_path, :current => params[:controller] == "admin/users" %>
             <%= m.item "차단", admin_users_path, :current => params[:controller] == "admin/blocks" %>
           <% end %>

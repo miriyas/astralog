@@ -5,12 +5,6 @@ GIT
     compass_twitter_bootstrap (2.3.2)
       compass
 
-GIT
-  remote: http://github.com/rmagick/rmagick.git
-  revision: 79e1708c7f6792a3a90cb8cb3ffaeb74c58e092e
-  specs:
-    rmagick (2.13.2)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -124,6 +118,8 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.25.1)
+    mini_magick (3.7.0)
+      subexec (~> 0.2.1)
     minitest (5.3.3)
     mobile-fu (1.3.1)
       rack-mobile-detect
@@ -222,6 +218,7 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh
       term-ansicolor
+    subexec (0.2.3)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
     therubyracer (0.12.0)
@@ -272,13 +269,13 @@ DEPENDENCIES
   jbuilder (~> 2.0)
   jquery-rails
   kaminari
+  mini_magick
   mobile-fu
   mysql2
   oily_png
   quiet_assets
   rails (= 4.1.0.rc2)
   rails-erd
-  rmagick (= 2.13.2)!
   rspec-rails (~> 3.0.0.beta2)
   sass-rails (~> 4.0.2)
   simple_form (~> 3.0.1)

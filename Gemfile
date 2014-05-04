@@ -20,7 +20,8 @@ gem 'simple_form', '~> 3.0.1'
 gem 'sorcery'
 gem 'carrierwave'
 gem 'carrierwave_backgrounder'
-gem 'rmagick', '2.13.2', :git=>'http://github.com/rmagick/rmagick.git'
+gem "mini_magick"
+# gem 'rmagick', '2.13.2', :git=>'http://github.com/rmagick/rmagick.git'
 gem 'user-agent'
 gem 'mobile-fu'
 

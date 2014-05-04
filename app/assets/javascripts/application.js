@@ -15,3 +15,10 @@
 //= require turbolinks
 //= require_tree .
 //= require moment.min
+
+function insertImage(trigger) {
+  var src = $(trigger).attr("rel");
+  var filename = String(/[^\/]+$/.exec(src));
+  var new_img = "<p><img src='"+ src +"' alt='" + filename + "'/></p>"
+  window.activated_editor.insertHtml(new_img);
+};

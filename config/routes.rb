@@ -3,7 +3,6 @@ Astralog::Application.routes.draw do
   # root to: 'main#index'
   # get '/' => 'main#index'
 
-  get '/:id', to: 'posts#show'
   resources :posts
 
   namespace :admin do
@@ -19,6 +18,9 @@ Astralog::Application.routes.draw do
     resources :categories
     resources :posts
     resources :comments
+    resources :assets
     resources :users
   end 
+
+  get '/:id', to: 'posts#show'
 end

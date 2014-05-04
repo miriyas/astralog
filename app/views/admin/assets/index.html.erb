@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="w100p">
+    <h1>총 <%= content_tag :span, Asset.count, :class => "font-important" %>개의 파일</h1>
+  </div>
+
+  <table class="table table-striped">
+    <thead>
+      <tr class="fs12">
+        <th>#</th>
+        <th>사진</th>
+        <th>업로더</th>
+        <th>파일명<br>실제파일명</th>
+        <th>크기<br>용량</th>
+        <th>올린날짜<br>올린시간</th>
+        <th></th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @assets.each do |asset| %>
+        <tr class="fs12">
+          <td>
+            <%= asset.id %><br>
+            <% case asset.content_type %>
+            <% when "image/jpeg" %>
+              <span class="label label-success">
+            <% when "image/gif" %>
+              <span class="label label-warning">
+            <% else %>
+              <span class="label label-danger">
+            <% end %> 
+            <%= asset.content_type.gsub("image/", "").upcase %></span>
+          </td>
+          <td><%= link_to(image_tag(asset.url(:thumb80)), asset.url) %></td>
+          <td><%= asset.user.nickname %><br><%= asset.user.email %></td>
+          <td><%= asset.screen_filename %><br><%= asset.filename %></td>
+          <td>
+            <%= asset.dimensions %><br>
+            <% if asset.filesize.blank? %>
+              -
+            <% else %>
+              <%= number_to_human_size(asset.filesize.to_i, precision: 2, significant: false) %>
+            <% end %>
+          </td>
+          <td>
+            <%= hdate(asset.created_at, "/") %><br>
+            <%= htime(asset.created_at) %>
+          </td>
+          <td>
+            <%= link_to(admin_asset_path(asset), method: :delete, data: { confirm: '정말 삭제하시겠습니까?' }, class: "btn btn-danger btn-xs") do %>
+              <span class="glyphicon glyphicon-remove"></span> 삭제
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= form_for [:admin, Asset.new], :class => "form-horizontal", :html => { :target => "publish_asset" } do |f| %>
+    <div class="form-group">
+      <%= f.file_field :filedata, :autocomplete => "off" %>
+    </div>
+    <%= button_tag type: "submit", class: "btn btn-success" do %>
+      <span class="glyphicon glyphicon-plus"></span> 새 파일 업로드
+    <% end %>
+  <% end %>
+  <iframe id="publish_asset" name="publish_asset" style="display:none;" src="about:blank"></iframe>
+
+  <ul id="asset_list" class="list-unstyled" style="overflow-y:scroll;overflow-x:hidden;"></ul>
+  <%#= render 'create' %>
+
+</div>

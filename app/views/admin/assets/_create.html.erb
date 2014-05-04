@@ -1,0 +1,6 @@
+<script>
+parent.$('#asset_list').html("");
+<%# @assets.each do |asset| %>
+  parent.$('#asset_list').prepend('<%= escape_javascript(render(:partial => "asset", :locals => {:asset => @asset})) %>');
+<%# end %>
+</script>

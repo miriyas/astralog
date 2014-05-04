@@ -112,9 +112,12 @@ setTimeout(function(){
 
     var saved_posts = editor.getFiles();
     for (p in saved_posts) {
-      if (p.split('-')[0] != name_base) continue;
+      console.log(p)
+      console.log(name_base)
+      if (p.split('-')[0] + "-" != name_base) continue;
       if (p == temp_file) continue;
       if (p == last_saved) continue;
+      console.log( 111)
       var title = p.replace(name_base + "t", "") + "에 저장됨"
       $('#saved_list').append('<li data-saveid=' + p + ' class="tdu">' + title + '</li>');
     };
