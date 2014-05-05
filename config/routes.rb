@@ -16,6 +16,7 @@ Astralog::Application.routes.draw do
     resources :users
     resources :subjects
     resources :categories
+    get '/categories/:id/reposition/:to', to: 'categories#reposition'
     resources :posts
     resources :comments
     resources :assets

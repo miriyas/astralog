@@ -38,7 +38,39 @@ class Admin::CategoriesController < ApplicationController
     redirect_to admin_categories_path
   end
   
-
+  
+  def reposition
+    category = Category.find(params[:id])
+    current_position = category.position
+    future_position = params[:to]
+    if future_position.to_i == 0
+      # UP or DOWN 문자로 들어왔을 때
+      if future_position == "down"
+        c = Category.where("position > ? AND subject_id = ?", current_position, category.subject_id).first
+      elsif future_position == "up"
+        c = Category.where("position < ? AND subject_id = ?", current_position, category.subject_id).last
+      end
+      if c.present?
+        category.update_attributes(position: c.position)
+        c.update_attributes(position: current_position)
+      else
+        # 이미 맨 아래거나 맨 위라 아무것도 안함.
+      end
+    else
+      # 숫자로 들어왔을 때
+      future_position = future_position.to_i
+      if current_position == future_position
+        # 현재 위치랑 같으므로 아무것도 안함.
+      elsif current_position > future_position
+        Category.where(position: future_position..current_position, subject: category.subject_id).update_all("position = position + 1")
+      else
+        Category.where(position: current_position..future_position, subject: category.subject_id).update_all("position = position - 1")
+      end
+      category.update_attributes(position: future_position)
+    end
+    redirect_to admin_categories_path
+  end
+  
 private
 
   def category_params
