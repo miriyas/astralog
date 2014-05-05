@@ -36,7 +36,8 @@ ActiveRecord::Schema.define(version: 20140502194546) do
     t.integer  "subject_id"
     t.integer  "parent_id"
     t.string   "view_type"
-    t.integer  "posts_count", default: 0
+    t.integer  "posts_count",  default: 0
+    t.integer  "archposition"
     t.integer  "position"
     t.string   "role"
     t.datetime "created_at"

@@ -2,12 +2,57 @@
   <div class="w100p">
     <h1>총 <%= content_tag :span, Category.count, :class => "font-important" %>개의 글 분류</h1>
   </div>
+  
+  <% Subject.all.each do |subject| %>
+  xx
+    <% subject.categories.upper_categories.order("archposition asc").each do |archcategory| %>
+      <ul class="bcg">
+        <span class="fcgr"><%= archcategory.id %></span>
+        <span class="<%= archcategory.parent.present? ? '' : 'fwb fcr' %>"><%= archcategory.archposition %></span>
+        <span class="<%= archcategory.parent.present? ? '' : 'fwb fcg' %>"><%= archcategory.position %></span>
+        <span class="<%= archcategory.parent.present? ? '' : 'fwb' %>">
+          <% case archcategory.role %>
+            <% when "divider" %>
+              <%= "-------------------------" %>
+            <% when "spacer" %>
+              <%= "/////////////////////////" %>
+            <% else %>
+              <%= archcategory.name %>
+            <% end %>
+          </span>
+        <span class=""><%= archcategory.posts_count %></span>
+        <span class=""><%= hdate(archcategory.created_at, "/") %></span>
+        
+        <% archcategory.categories.order("position asc").each do |category| %>
+        
+        <li class="">
+          <span class="fcgr"><%= category.id %></span>
+          <span class="<%= category.parent.present? ? '' : 'fwb fcr' %>"><%= category.archposition %></span>
+          <span class="<%= category.parent.present? ? '' : 'fwb fcg' %>"><%= category.position %></span>
+          <span class="<%= category.parent.present? ? '' : 'fwb' %>">
+            <% case category.role %>
+              <% when "divider" %>
+                <%= "-------------------------" %>
+              <% when "spacer" %>
+                <%= "/////////////////////////" %>
+              <% else %>
+                <%= category.name %>
+              <% end %>
+            </span>
+          <span class=""><%= category.posts_count %></span>
+          <span class=""><%= hdate(category.created_at, "/") %></span>
+        </li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% end %>
 
   <table class="table table-striped">
     <thead>
       <tr>
         <th>#</th>
         <th>소속 주제</th>
+        <th>대순서</th>
         <th>순서</th>
         <th>대분류</th>
         <th>용도</th>
@@ -29,21 +74,22 @@
                 <%= category.subject.name.present? ? category.subject.name : "---------------------------" %>
               <% end %>
             </td>
-            <td><%= category.position %></td>
+            <td class="<%= category.parent.present? ? '' : 'fwb fcr' %>"><%= category.archposition %></td>
+            <td class="<%= category.parent.present? ? '' : 'fwb fcr' %>"><%= category.position %></td>
             <td><%= category.parent.present? ? category.parent.name : "-" %></td>
             <td>
               <% case category.role %>
               <% when "category" %>
-                <span class="label label-primary"><%= Category::ROLE.index(category.role) %></span>
+                <span class="label label-primary"><%= Category::ROLE.key(category.role) %></span>
               <% when "divider" %>
-                <span class="label label-warning"><%= Category::ROLE.index(category.role) %></span>
+                <span class="label label-warning"><%= Category::ROLE.key(category.role) %></span>
               <% when "spacer" %>
-                <span class="label label-info"><%= Category::ROLE.index(category.role) %></span>
+                <span class="label label-info"><%= Category::ROLE.key(category.role) %></span>
               <% else %>
-                <span class="label label-danger"><%= Category::ROLE.index(category.role) %></span>
+                <span class="label label-danger"><%= Category::ROLE.key(category.role) %></span>
               <% end %> 
             </td>
-            <td>
+            <td class="<%= category.parent.present? ? '' : 'fwb fcr' %>">
               <% case category.role %>
               <% when "divider" %>
                 <%= "-------------------------" %>
@@ -56,11 +102,11 @@
             <td>
               <% case category.view_type %>
               <% when "list" %>
-                <span class="label label-primary"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
+                <span class="label label-primary"><%= Category::VIEW_TYPE.key(category.view_type) %></span>
               <% when "summary" %>
-                <span class="label label-success"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
+                <span class="label label-success"><%= Category::VIEW_TYPE.key(category.view_type) %></span>
               <% when "show" %>
-                <span class="label label-info"><%= Category::VIEW_TYPE.index(category.view_type) %></span>
+                <span class="label label-info"><%= Category::VIEW_TYPE.key(category.view_type) %></span>
               <% else %>
                 <span class="label label-danger"><%= category.view_type %></span>
               <% end %> 

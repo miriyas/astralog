@@ -6,9 +6,10 @@ class CreateCategories < ActiveRecord::Migration
       t.integer :parent_id
       t.string :view_type
       t.integer :posts_count, :default => 0
+      t.integer :archposition
       t.integer :position
-			t.string :role
-
+      t.string :role
+      
       t.timestamps
     end
   end
