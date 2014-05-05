@@ -1,4 +1,15 @@
 <div class="p10">
+  <%= form_for [:admin, Asset.new], :class => "form-horizontal", :html => { :target => "publish_asset" } do |f| %>
+    <div class="form-group">
+      <%= f.file_field :filedata, :autocomplete => "off" %>
+    </div>
+    <%= button_tag type: "submit", class: "btn btn-success" do %>
+      <span class="glyphicon glyphicon-plus"></span> 새 파일 업로드
+    <% end %>
+  <% end %>
+  <iframe id="publish_asset" name="publish_asset" style="display:none;" src="about:blank"></iframe>
+  <ul id="asset_list" class="list-unstyled" style="overflow-y:scroll;overflow-x:hidden;"></ul>
+  
   <%= simple_form_for [:admin, @post] do |f| %>
     <% @errors = @post.errors.messages %>
     <%= f.hidden_field :user_id, value: current_user.id %>
@@ -14,19 +25,7 @@
       <ul id="saved_list"></ul>
       <a id="flush">저장본 후련하게 싹 비우기</a><br>
       <a id="insert">ddddddd</a><br>
-    </div>
-    
-    <%= form_for [:admin, Asset.new], :class => "form-horizontal", :html => { :target => "publish_asset" } do |f| %>
-      <div class="form-group">
-        <%= f.file_field :filedata, :autocomplete => "off" %>
-      </div>
-      <%= button_tag type: "submit", class: "btn btn-success" do %>
-        <span class="glyphicon glyphicon-plus"></span> 새 파일 업로드
-      <% end %>
-    <% end %>
-    <iframe id="publish_asset" name="publish_asset" style="display:none;" src="about:blank"></iframe>
-    <ul id="asset_list" class="list-unstyled" style="overflow-y:scroll;overflow-x:hidden;"></ul>
-    
+    </div>    
     
     <div class="w300">
       <br>
@@ -90,7 +89,8 @@ var opts = {
   },
   buttons: false,
   focusOnLoad: false,
-  autogrow: false
+  autogrow: false,
+  addons: [ 'google-code-prettify' ]
 }
 var editor = new EpicEditor(opts);
 
@@ -161,13 +161,42 @@ function renderSavedList() {
 }
 
 setTimeout(function(){
+  var previewer;
   editor.load(function () {
+    previewer = this.getElement('previewer');
+
+    // Prettify JS
+    var scriptTag = previewer.createElement('script');
+    scriptTag.src = '/assets/prettify.js';
+
+    // Prettify CSS
+    var cssTag = previewer.createElement('link');
+    cssTag.rel = 'stylesheet';
+    cssTag.type = 'text/css';
+    cssTag.href = '/assets/prettify.css';
+
+    // Add JS / CSS
+    previewer.body.appendChild(scriptTag);
+    previewer.head.appendChild(cssTag);
+
     console.log("Editor loaded.")
   });
+  
   editor.on('update', function () {
     document.querySelector('#epiceditor-preview').innerHTML = this.exportFile(null, 'html');
+    var previewerBody = document.querySelector('#epiceditor-preview');
+    var codeBlocks = previewerBody.getElementsByTagName('code');
+    for (var i = 0; i < codeBlocks.length; i++) {
+      if (codeBlocks[i].className.search('prettyprint') != -1) {
+        continue;
+      } else {
+        codeBlocks[i].className += ' prettyprint';
+      }
+    }
+    prettyPrint(null, previewerBody);
+    // document.querySelector('#epiceditor-preview').innerHTML = this.getElement('previewer').getElementById('epiceditor-preview').innerHTML;
   }).emit('update');
+  
   renderSavedList();
 },100);
-
 </script>

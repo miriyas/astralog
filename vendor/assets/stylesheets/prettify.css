@@ -1,0 +1,68 @@
+/* Pretty printing styles. Used with prettify.js.
+ *
+ * Name:	Stanley Ng
+ * Email: 	stanleyhlng@googlegroups.com
+ * 
+ * Credits:
+ * https://github.com/chriskempson/tomorrow-theme
+ */
+.pln {
+  color: #000000; }
+
+.str {
+  color: #C01F07; }
+
+.kwd {
+  color: #A600B0; }
+
+.com {
+  color: #298d00;
+  font-style: italic; }
+
+.typ {
+  color: #f5871f; }
+
+.lit {
+  color: #1800D8; }
+
+.pun {
+  color: #4d4d4c; }
+
+.opn {
+  color: #4d4d4c; }
+
+.clo {
+  color: #4d4d4c; }
+
+.tag {
+  color: #8C0D85; }
+
+.atn {
+  color: #AF4C00; }
+
+.atv {
+  color: #180EAD; }
+
+.dec {
+  color: #C1C0C0; }
+
+.var {
+  color: #c82829; }
+
+.fun {
+  color: #c82829; }
+
+/* Put a border around prettyprinted code snippets. */
+pre.prettyprint {
+  background-color: #ffffff;
+  padding: 10px;
+  border: 1px solid #E1E1E8; }
+
+/* Specify class=linenums on a pre to get line numbering */
+ol.linenums {
+  color: #8e908c;
+  margin: 0 0 0 40px; }
+
+ol.linenums li {
+  line-height: 18px;
+  padding-left: 12px; }
