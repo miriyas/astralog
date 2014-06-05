@@ -4,48 +4,95 @@
   </div>
   
   <% Subject.all.each do |subject| %>
-  xx
-    <% subject.categories.upper_categories.order("archposition asc").each do |archcategory| %>
-      <ul class="bcg">
-        <span class="fcgr"><%= archcategory.id %></span>
-        <span class="<%= archcategory.parent.present? ? '' : 'fwb fcr' %>"><%= archcategory.archposition %></span>
-        <span class="<%= archcategory.parent.present? ? '' : 'fwb fcg' %>"><%= archcategory.position %></span>
-        <span class="<%= archcategory.parent.present? ? '' : 'fwb' %>">
-          <% case archcategory.role %>
-            <% when "divider" %>
-              <%= "-------------------------" %>
-            <% when "spacer" %>
-              <%= "/////////////////////////" %>
-            <% else %>
-              <%= archcategory.name %>
-            <% end %>
-          </span>
-        <span class=""><%= archcategory.posts_count %></span>
-        <span class=""><%= hdate(archcategory.created_at, "/") %></span>
-        
-        <% archcategory.categories.order("position asc").each do |category| %>
-        
-        <li class="">
-          <span class="fcgr"><%= category.id %></span>
-          <span class="<%= category.parent.present? ? '' : 'fwb fcr' %>"><%= category.archposition %></span>
-          <span class="<%= category.parent.present? ? '' : 'fwb fcg' %>"><%= category.position %></span>
-          <span class="<%= category.parent.present? ? '' : 'fwb' %>">
-            <% case category.role %>
+    <div class="fl subject sortable connectedSortable" sid="<%= subject.id %>">
+      <p class="tac fwb"><%= subject.name %></p>
+      <% subject.categories.upper_categories.order("archposition asc").each do |archcategory| %>
+        <ul class="ui-state-default archcategory sortable-small connectedSortable-small" aid="<%= archcategory.id %>">
+          <span class="fcgr"><%= archcategory.id %></span>
+          <span class="<%= archcategory.parent.present? ? '' : 'fwb fcr' %>"><%= archcategory.archposition %></span>
+          <span class="<%= archcategory.parent.present? ? '' : 'fwb fcg' %>"><%= archcategory.position %></span>
+          <span class="<%= archcategory.parent.present? ? '' : 'fwb' %>">
+            <% case archcategory.role %>
               <% when "divider" %>
                 <%= "-------------------------" %>
               <% when "spacer" %>
                 <%= "/////////////////////////" %>
               <% else %>
-                <%= category.name %>
+                <%= archcategory.name %><span class="fcgr"> (<%= archcategory.posts_count %>)</span>
               <% end %>
-            </span>
-          <span class=""><%= category.posts_count %></span>
-          <span class=""><%= hdate(category.created_at, "/") %></span>
-        </li>
-        <% end %>
-      </ul>
-    <% end %>
+          </span>
+          
+          <% archcategory.categories.order("position asc").each do |category| %>
+            <li class="category" cid="<%= category.id %>">
+              <div class="">
+                <span class="fcgr"><%= category.id %></span>
+                <span class="<%= category.parent.present? ? '' : 'fwb fcr' %>"><%= category.archposition %></span>
+                <span class="<%= category.parent.present? ? '' : 'fwb fcg' %>"><%= category.position %></span>
+                <span class="<%= category.parent.present? ? '' : 'fwb' %>">
+                  <% case category.role %>
+                  <% when "divider" %>
+                    <%= "-------------------------" %>
+                  <% when "spacer" %>
+                    <%= "/////////////////////////" %>
+                  <% else %>
+                    <%= category.name %><span class="fcgr"> (<%= category.posts_count %>)</span>
+                  <% end %> 
+                </span>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% end %>
+    </div>
   <% end %>
+  
+  <script>
+    $(function() {
+      $(".sortable").sortable({
+        items: "ul",
+        connectWith: ".connectedSortable",
+        placeholder: "archplaceholder",
+        forcePlaceholderSize: true,
+        distance: 15,
+        start: function( event, ui ) {
+          $('.archplaceholder').height(ui.item.outerHeight())
+        },
+        update: function(event, ui) {
+          var aids = $(this).sortable( "toArray", { attribute: 'aid' }).toString();
+          $.get('categories/rearrange', {aids:aids});
+          console.log(aids)
+        },
+        receive: function(event,ui) {
+          var aids = $(this).sortable( "toArray", { attribute: 'aid' }).toString();
+          var sid = $(this).attr("sid");
+          $.get('categories/rearrange', {aids:aids, sid:sid});
+          console.log("parent changed to : " + sid)
+        }
+      }).disableSelection();
+    });
+    
+    $(function() {
+      $(".sortable-small").sortable({
+        items: "li",
+        connectWith: ".connectedSortable-small",
+        placeholder: "placeholder",
+        forcePlaceholderSize: true,
+        distance: 15,
+        start: function( event, ui ) {
+          $('.placeholder').height(ui.item.outerHeight())
+        },
+        update: function(event, ui) {
+          var cids = $(this).sortable( "toArray", { attribute: 'cid' }).toString();
+          var aid = $(this).attr("aid");
+          $.get('categories/rearrange', {cids:cids, aid:aid});
+          console.log(cids)
+          console.log(aid)
+        },
+      }).disableSelection();
+    });
+  </script>
+
+  
 
   <table class="table table-striped">
     <thead>

@@ -21,6 +21,7 @@
         <tr class="fs12">
           <td>
             <%= asset.id %><br>
+            <%= asset.is_image? %>
             <% case asset.content_type %>
             <% when "image/jpeg" %>
               <span class="label label-success">

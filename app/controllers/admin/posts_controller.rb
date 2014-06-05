@@ -11,22 +11,36 @@ class Admin::PostsController < ApplicationController
   end
 
   def new
-    @post = Post.new
-  end
-  def create
-    @post = Post.new(post_params)
-    if @post.save
-      redirect_to admin_posts_path, notice: 'Post was successfully created.'
+    p "POST NEW"
+    if @new_post = PostDraft.where(post_id: nil).first
+      @post = @new_post
     else
-      p @post.errors
-      render action: 'new'
+      @post = PostDraft.create(post_id: nil, user_id: current_user.id)
     end
   end
 
+  def create
+    p "POST CREATE"
+    @post = Post.create(params[:draft_id])
+    
+    
+    
+    # @post = Post.new(post_params)
+    # if @post.save
+    #   redirect_to admin_posts_path, notice: 'Post was successfully created.'
+    # else
+    #   p @post.errors
+    #   render action: 'new'
+    # end
+  end
+
   def edit
+    p "POST EDIT"
     @post = Post.find(params[:id])
   end
+
   def update
+    p "POST UPDATE"
     @post = Post.find(params[:id])
     if @post.update(post_params)
       redirect_to admin_posts_path, notice: 'Post was successfully updated.'
@@ -36,10 +50,15 @@ class Admin::PostsController < ApplicationController
     end
   end
 
+  def auto_save
+    @post = Post.find(params[:post_id])
+    @post.update_attributes(post_params)
+  end
+
   def destroy
     @post = Post.find(params[:id])
     @post.destroy
-    redirect_to posts_url
+    redirect_to admin_posts_path
   end
 
 private

@@ -1446,7 +1446,7 @@ var prettyPrint;
     */
   function $prettyPrint(opt_whenDone, opt_root) {
     var root = opt_root || document.body;
-    console.log(root)
+    // console.log(root)
     var doc = root.ownerDocument || document;
     function byTagName(tn) { return root.getElementsByTagName(tn); }
     // fetch a list of nodes to rewrite

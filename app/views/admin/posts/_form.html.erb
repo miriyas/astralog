@@ -1,3 +1,8 @@
+<%= @post.id %>
+<%= @post %>
+<%= @post.body %>
+<%= params %>
+
 <div class="p10">
   <%= form_for [:admin, Asset.new], :class => "form-horizontal", :html => { :target => "publish_asset" } do |f| %>
     <div class="form-group">
@@ -38,7 +43,7 @@
       <script type="text/javascript" charset="utf-8">
       function reloadParentCategory(value) {
         console.log(value)
-        $.ajax('../reload_parent_category?subject=' + value)
+        $.ajax('../shared/reload_parent_category?subject=' + value)
       }
       </script>
       <br>
@@ -56,113 +61,57 @@
 <%= javascript_include_tag "epiceditor" %>
 
 <script type="text/javascript" charset="utf-8">
-var user_id = <%= current_user.id %>;
-var post_id = <%= params[:action] == "edit" ? @post.id : "new" %>;
-var name_base = 'ep_u' + user_id + '_p' + post_id + '-';
-var temp_file = name_base + 'auto';
-var last_saved = name_base + 'last';
-
-var saved_list = JSON.parse(localStorage.getItem("epiceditor"));
-if (saved_list[temp_file]) {
-  // 이전 임시 저장본이 있을 경우 마지막 저장본으로 살려둔다.
-  saved_list[last_saved] = saved_list[temp_file];
-  localStorage.setItem("epiceditor", JSON.stringify(saved_list))
-}
-
-var opts = {
-  container: 'epiceditor',
-  textarea: 'post_body',
-  basePath: '<%= asset_path('assets') %>',
-  clientSideStorage: true,
-  localStorageName: 'epiceditor',
-  useNativeFullscreen: false,
-  parser: marked,
-  file: {
-    name: temp_file,
-    defaultContent: '내용',
-    autoSave: 100
-  },
-  theme: {
-    base: '/base/epiceditor.css',
-    preview: '/preview/github.css',
-    editor: '/editor/epic-light.css'
-  },
-  buttons: false,
-  focusOnLoad: false,
-  autogrow: false,
-  addons: [ 'google-code-prettify' ]
-}
-var editor = new EpicEditor(opts);
-
-$('#save').click(function(){
-  // 현재 저장된 데이터에 새 항목을 추가한다.
-  var newName = name_base + "t" + moment().format('YYYY/MM/DD_hh:mm:ss');
-  saved_list = JSON.parse(localStorage.getItem("epiceditor"))
-  saved_list[newName] = saved_list[temp_file];
-  localStorage.setItem("epiceditor", JSON.stringify(saved_list))
-  renderSavedList();
-});
-
-$('#flush').click(function(){
-  // 임시 저장된 데이터들을 싹 지운다.
-  var saved_posts = editor.getFiles();
-  for (p in saved_posts) {
-    if (p.split('-')[0] != name_base) continue;
-    if (p == temp_file) continue;
-    editor.remove(p);
-  };
-  renderSavedList();
-});
-
-$('#insert').click(function(){
-  editor.insertText("ddd")
-});
-
-function insertText(trigger) {
-  editor.insertText(trigger)
-}
-
-function insertImage(trigger) {
-  var src = $(trigger).attr("rel");
-  var filename = String(/[^\/]+$/.exec(src));
-  var new_img = "<p><img src='"+ src +"' alt='" + filename + "'/></p>"
-  editor.insertText(new_img)
-};
-
-function insertFile(trigger) {
-  var filename = $(trigger).html();
-  var new_link = "<p><a href='' target='_blank'>" + filename + "</a></p>"
-  window.activated_editor.insertHtml(new_link);
-};
-
-function renderSavedList() {
-  $('#saved_list').html("");
-
-  var saved_posts = editor.getFiles();
-  for (p in saved_posts) {
-    if (p.split('-')[0] + "-" != name_base) continue;
-    if (p == temp_file) continue;
-    if (p == last_saved) continue;
-    var title = p.replace(name_base + "t", "") + "에 저장됨"
-    $('#saved_list').append('<li data-saveid=' + p + ' class="tdu">' + title + '</li>');
-  };
-  
-  if (saved_posts[last_saved]) {
-    var last_saved_time = moment(saved_posts[last_saved].modified).format('YYYY/MM/DD_hh:mm:ss');
-    $('#saved_list').append('<li data-saveid=' + last_saved + ' class="tdu">' + last_saved_time + ' 마지막 저장본</li>');
-  }
-  
-  $('#saved_list li').click(function(){
-    saved_list = JSON.parse(localStorage.getItem("epiceditor"))
-    saved_list[temp_file] = saved_list[this.dataset.saveid];
-    localStorage.setItem("epiceditor", JSON.stringify(saved_list))
-    editor.open(temp_file);
-  });
-}
-
 setTimeout(function(){
+  var opts = {
+    container: 'epiceditor',
+    textarea: 'post_draft_body',
+    basePath: '<%= asset_path('assets') %>',
+    clientSideStorage: false,
+    localStorageName: 'epiceditor',
+    useNativeFullscreen: false,
+    parser: marked,
+    file: {
+      name: 'epiceditor',
+      defaultContent: '내용',
+      autoSave: 100
+    },
+    theme: {
+      base: '/base/epiceditor.css',
+      preview: '/preview/github.css',
+      editor: '/editor/epic-light.css'
+    },
+    buttons: false,
+    focusOnLoad: false,
+    autogrow: false,
+    addons: [ 'google-code-prettify' ]
+  }
+  var editor = new EpicEditor(opts);
+
+  $('#insert').click(function(){
+    editor.insertText("ddd")
+  });
+
+  function insertText(trigger) {
+    editor.insertText(trigger)
+  }
+
+  function insertImage(trigger) {
+    var src = $(trigger).attr("rel");
+    var filename = String(/[^\/]+$/.exec(src));
+    var new_img = "<p><img src='"+ src +"' alt='" + filename + "'/></p>"
+    editor.insertText(new_img)
+  };
+
+  function insertFile(trigger) {
+    var filename = $(trigger).html();
+    var new_link = "<p><a href='' target='_blank'>" + filename + "</a></p>"
+    window.activated_editor.insertHtml(new_link);
+  };
+
+
   var previewer;
   editor.load(function () {
+    console.log(22)
     previewer = this.getElement('previewer');
 
     // Prettify JS
@@ -183,7 +132,10 @@ setTimeout(function(){
   });
   
   editor.on('update', function () {
-    document.querySelector('#epiceditor-preview').innerHTML = this.exportFile(null, 'html');
+    var value = this.exportFile(null, 'html');
+    document.querySelector('#epiceditor-preview').innerHTML = value;
+    
+    // pretty print
     var previewerBody = document.querySelector('#epiceditor-preview');
     var codeBlocks = previewerBody.getElementsByTagName('code');
     for (var i = 0; i < codeBlocks.length; i++) {
@@ -194,9 +146,17 @@ setTimeout(function(){
       }
     }
     prettyPrint(null, previewerBody);
-    // document.querySelector('#epiceditor-preview').innerHTML = this.getElement('previewer').getElementById('epiceditor-preview').innerHTML;
   }).emit('update');
   
-  renderSavedList();
-},100);
+  // auto save
+  setInterval(function () {
+    $.ajax({
+      type: 'post',
+      url: '../post_drafts/<%= @post.id %>/auto_save',
+      data: $('.simple_form').serialize(),
+      success: function (xhr, status, m) { console.log(m)},
+    }).fail(function(xhr, status, m) { console.log(m)})
+  }, 3000);
+
+},500);
 </script>
